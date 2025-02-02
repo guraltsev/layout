@@ -3,8 +3,10 @@
 #Include CharacterMaps.ahk
 
 ;InstallKeybdHook
-KeyHistory(50)     ;; disables the key history (for privacy and security)
-;ListLines(False)   ;; omits recently executed lines from history (for privacy and security)
+;; disables the key history (for privacy and security)
+;KeyHistory(50)     
+;; omits recently executed lines from history (for privacy and security)
+;ListLines(False)   
 
 SendMode("Input")  ; optimizes for faster and more reliable input
 
@@ -12,11 +14,24 @@ Write_Output(message) {
     FileAppend(message . "`n", "*")
 }
 
+class Layout {
+    __New(name, abrv, icon) {
+        this.Name := name
+        this.Abrv := abrv
+        this.Icon := icon
+    }
+}
+
+global Layouts_cl := [
+    Layout("Colemak", "Col", "icons/col.ico"),
+    Layout("None", "None", "icons/default.ico")
+]
+global LayoutIndex := 1 ;; Default layout
 
 
-global Layouts := ["Colemak", "None"]
-global Layouts_Abrv := ["Col", "None"]
-global LayoutIcon := ["icons/col.ico", "icons/default.ico"]
+; global Layouts := ["Colemak", "None"]
+; global Layouts_Abrv := ["Col", "None"]
+; global LayoutIcon := ["icons/col.ico", "icons/default.ico"]
 
 
 
@@ -24,17 +39,22 @@ global LayoutIcon := ["icons/col.ico", "icons/default.ico"]
 _SwitchMenu() {
     global Layouts
     global LayoutIndex
-    global Layouts_Abrv
-    For Index, Value in Layouts {
-        A_TrayMenu.Uncheck(Layouts_Abrv[Index])
+    
+    ;; Clear all checks on enabled layouts
+    For Index, Value in Layouts_cl {
+        ;A_TrayMenu.Uncheck(Layouts_Abrv[Index])
+        A_TrayMenu.Uncheck(Layouts_cl[Index].Abrv)
     }
-    A_TrayMenu.Check(Layouts_Abrv[LayoutIndex])
+    ;A_TrayMenu.Check(Layouts_Abrv[LayoutIndex])
+    
+    ;; Set the check on the current layout
+    A_TrayMenu.Check(Layouts_cl[LayoutIndex].Abrv)
 }
 
 _SwitchIcon() {
+    global Layouts_cl
     global LayoutIndex
-    global LayoutIcon
-    TraySetIcon(LayoutIcon[LayoutIndex])
+    TraySetIcon(Layouts_cl[LayoutIndex].Icon)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;; MENU ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -45,18 +65,21 @@ _Menu_SelectLayout(NewLayoutIndex, ItemName, ItemPos, MyMenu) {
     LayoutIndex:=NewLayoutIndex
     SwitchLayout()
 }
-; Create radio buttons in Menu
-A_TrayMenu.Add("")
-For Index, Value in Layouts {
-    A_TrayMenu.Add(Layouts_Abrv[Index], _Menu_SelectLayout.Bind(Index),"Radio")
-    A_TrayMenu.SetIcon(Layouts_Abrv[Index], LayoutIcon[Index])
+
+;; Create radio buttons in Menu
+ A_TrayMenu.Add("")
+
+ ; For Index, Value in Layouts {
+;     A_TrayMenu.Add(Layouts_Abrv[Index], _Menu_SelectLayout.Bind(Index),"Radio")
+;     A_TrayMenu.SetIcon(Layouts_Abrv[Index], LayoutIcon[Index])
+
+; }
+For Index, Value in Layouts_cl {
+    A_TrayMenu.Add(Layouts_cl[Index].Abrv, _Menu_SelectLayout.Bind(Index),"Radio")
+    A_TrayMenu.SetIcon(Layouts_cl[Index].Abrv, Layouts_cl[Index].Icon)
 
 }
 A_TrayMenu.Add("")
-
-
-
-
 
 ;;; Switch layout function
 ;;; To use: set the global variable LayoutIndex and call SwitchLayout
@@ -68,14 +91,13 @@ SwitchLayout() {
 NextLayout() {
     global LayoutIndex
     LayoutIndex := LayoutIndex + 1
-    If (LayoutIndex > Layouts.Length) {
+    If (LayoutIndex > Layouts_cl.Length) {
         LayoutIndex := 1
     }
     SwitchLayout()
 }
 
 ;; Configure the default layout 
-global LayoutIndex := 1
 SwitchLayout()
 RControl & RShift:: NextLayout
 ;; Configure the default composition 
@@ -148,7 +170,7 @@ LaTeXMath_HKF() {
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; Layout Colemak ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#HotIf Layouts[LayoutIndex] == "Colemak"
+#HotIf Layouts_cl[LayoutIndex].Name == "Colemak"
 ;; NumberRow
 ; SC029::` ;; Backtick
 ; SC02::1  ;; 1
