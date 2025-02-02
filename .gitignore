@@ -1,0 +1,26 @@
+# Ignore compiled AHK scripts
+*.exe
+
+# Ignore backup files
+*.bak
+*.old
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore log files
+*.log
+
+# Ignore user-specific files
+user_settings.ahk
+
+# Ignore temporary files
+*.tmp
+temp/
+
+# Ignore any other generated files
+dist/
+build/
