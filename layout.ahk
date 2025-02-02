@@ -2,7 +2,7 @@
 #SingleInstance Force
 
 ;InstallKeybdHook
-;KeyHistory(50)      ;; disables the key history (for privacy and security)
+KeyHistory(50)     ;; disables the key history (for privacy and security)
 ;ListLines(False)   ;; omits recently executed lines from history (for privacy and security)
 
 SendMode("Input")  ; optimizes for faster and more reliable input
@@ -15,7 +15,7 @@ Write_Output(message) {
 
 global Layouts := ["Colemak", "None"]
 global Layouts_Abrv := ["Col", "None"]
-global LayoutIcon := ["col.ico", "default.ico"]
+global LayoutIcon := ["icons/col.ico", "icons/default.ico"]
 
 
 
@@ -239,7 +239,6 @@ UnicodeMath := Map(
     "t", "τ",
     "u", "υ",
     "w", "ω",
-    "W", "Ω",
     "x", "ξ",
     "X", "Ξ",
     "y", "υ",
@@ -250,7 +249,7 @@ UnicodeMath := Map(
     "I", "∞",
 )
 
-IH := InputHook("L1", "r")
+IH := InputHook("L1")
 
 RAlt_Quote_HKF() {
     IH.Start()
@@ -259,6 +258,7 @@ RAlt_Quote_HKF() {
         Send AcuteAccent[IH.Input]
     }
 }
+
 RAlt_Backtick_HKF() {
     IH.Start()
     IH.Wait()
@@ -275,14 +275,18 @@ RAlt_Quotationmarks_HKF() {
 }
 
 LaTeXMath_HKF() {
-    Hotkey("SC029", "Off")
+    Hotkey("SC029", "Off") ; SC029 is the scancode of the key "`"
     IH.Start()
     IH.Wait()
+
+    ;; DEBUG
+    ; Write_Output("LaTeXMath_HKF: " . IH.Input)
+
     if (LaTeXMath.Has(IH.Input)) {
         SetKeyDelay(-1)
         SendEvent LaTeXMath[IH.Input]
     }
-    Hotkey("SC029", "On")
+    Hotkey("SC029", "On") ; SC029 is the scancode of the key "`"
 }
 
 
