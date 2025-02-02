@@ -29,24 +29,15 @@ global Layouts_cl := [
 global LayoutIndex := 1 ;; Default layout
 
 
-; global Layouts := ["Colemak", "None"]
-; global Layouts_Abrv := ["Col", "None"]
-; global LayoutIcon := ["icons/col.ico", "icons/default.ico"]
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; Helper functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 _SwitchMenu() {
     global Layouts
     global LayoutIndex
-    
     ;; Clear all checks on enabled layouts
     For Index, Value in Layouts_cl {
-        ;A_TrayMenu.Uncheck(Layouts_Abrv[Index])
         A_TrayMenu.Uncheck(Layouts_cl[Index].Abrv)
     }
-    ;A_TrayMenu.Check(Layouts_Abrv[LayoutIndex])
-    
     ;; Set the check on the current layout
     A_TrayMenu.Check(Layouts_cl[LayoutIndex].Abrv)
 }
@@ -68,12 +59,6 @@ _Menu_SelectLayout(NewLayoutIndex, ItemName, ItemPos, MyMenu) {
 
 ;; Create radio buttons in Menu
  A_TrayMenu.Add("")
-
- ; For Index, Value in Layouts {
-;     A_TrayMenu.Add(Layouts_Abrv[Index], _Menu_SelectLayout.Bind(Index),"Radio")
-;     A_TrayMenu.SetIcon(Layouts_Abrv[Index], LayoutIcon[Index])
-
-; }
 For Index, Value in Layouts_cl {
     A_TrayMenu.Add(Layouts_cl[Index].Abrv, _Menu_SelectLayout.Bind(Index),"Radio")
     A_TrayMenu.SetIcon(Layouts_cl[Index].Abrv, Layouts_cl[Index].Icon)
