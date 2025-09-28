@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;; LAYOUTS ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Compose maps
-global AcuteAccent := Map(
+global AcuteAccentMap := Map(
     "a", "á",  ; (á) a with acute
     "A", "Á",  ; (Á) A with acute
     "c", "ć",  ; (ć) c with acute
@@ -39,7 +39,7 @@ global AcuteAccent := Map(
     "z", "ź",  ; (ź) z with acute
     "Z", "Ź"  ; (Ź) Z with acute
 )
-global GraveAccent := Map(
+global GraveAccentMap := Map(
     "a", "à",  ; (à) a with grave
     "A", "À",  ; (À) A with grave
     "e", "è",  ; (è) e with grave
@@ -51,7 +51,7 @@ global GraveAccent := Map(
     "u", "ù",  ; (ù) u with grave
     "U", "Ù",  ; (Ù) U with grave
 )
-global Diaeresis := Map(
+global DiaeresisMap := Map(
     "a", "ä",  ; (ä) a with dieresis
     "A", "Ä",  ; (Ä) A with dieresis
     "e", "ë",  ; (ë) e with dieresis
@@ -62,87 +62,4 @@ global Diaeresis := Map(
     "O", "Ö",  ; (Ö) O with dieresis
     "u", "ü",  ; (ü) u with dieresis
     "U", "Ü",  ; (Ü) U with dieresis
-)
-
-LaTeXMath := Map(
-    "``", "``",
-    "a", "\alpha",
-    "b", "\beta",
-    "d", "\delta",
-    "D", "\Delta",
-    "e", "\epsilon",
-    "f", "\phi",
-    "F", "\Phi",
-    "g", "\gamma",
-    "G", "\Gamma",
-    "h", "\eta",
-    "j", "\theta",
-    "J", "\Theta",
-    "k", "\kappa",
-    "l", "\lambda",
-    "L", "\Lambda",
-    "m", "\mu",
-    "n", "\nu",
-    "N", "\nabla",
-    "p", "\pi",
-    "P", "\Pi",
-    "q", "\chi",
-    "Q", "\Chi",
-    "r", "\rho",
-    "s", "\sigma",
-    "t", "\tau",
-    "u", "\upsilon",
-    "w", "\omega",
-    "W", "\Omega",
-    "x", "\xi",
-    "X", "\Xi",
-    "y", "\psi",
-    "Y", "\Psi",
-    "z", "\zeta",
-    "i", "\in",
-    "0", "\emptyset",
-    "I", "\infty",
-    "\", "\setminus",
-    "+", "\cup",
-    "-", "\cap",
-    "<", "\langle",
-    ">", "\rangle"
-)
-
-UnicodeMath := Map(
-    "a", "α",
-    "b", "β",
-    "d", "δ",
-    "D", "Δ",
-    "e", "ε",
-    "f", "φ",
-    "F", "Φ",
-    "g", "γ",
-    "G", "Γ",
-    "h", "η",
-    "j", "θ",
-    "J", "Θ",
-    "k", "κ",
-    "l", "λ",
-    "L", "Λ",
-    "m", "μ",
-    "n", "ν",
-    "N", "Ν",
-    "p", "π",
-    "P", "Π",
-    "q", "ψ",
-    "Q", "Ψ",
-    "r", "ρ",
-    "s", "σ",
-    "t", "τ",
-    "u", "υ",
-    "w", "ω",
-    "x", "ξ",
-    "X", "Ξ",
-    "y", "υ",
-    "Y", "Υ",
-    "z", "ζ",
-    "i", "∈",
-    "0", "∅",
-    "I", "∞",
 )
