@@ -1,3 +1,19 @@
+; ==============================================================================
+; Colemak Layout Definition
+; ------------------------------------------------------------------------------
+; Returns a layout object with remap definitions and compose extras.
+; ==============================================================================
+; ------------------------------------------------------------------------------
+; ColemakLayoutDef()
+; Purpose:
+;   Build the Colemak layout definition used by the registry.
+; Arguments:
+;   None.
+; Returns:
+;   object - {
+;     name, abbr, icon, remaps (Map), extras (array of OneShotMapper)
+;   }
+; ------------------------------------------------------------------------------
 ColemakLayoutDef() {
     remaps := Map(
         "SC010", "q",

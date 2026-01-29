@@ -1,8 +1,35 @@
+; ==============================================================================
+; Registries
+; ------------------------------------------------------------------------------
+; Responsibility:
+;   Provide declarative registration for layouts and modes. This keeps all
+;   “what exists” decisions in a single place and allows the rest of the app to
+;   work generically over registries.
+; ==============================================================================
+
+; ------------------------------------------------------------------------------
+; SendMath(text)
+; Purpose:
+;   Send math-mode output with a consistent, fast send strategy.
+; Arguments:
+;   text (string) - Text to emit (LaTeX or Unicode).
+; Returns:
+;   Nothing.
+; ------------------------------------------------------------------------------
 SendMath(text) {
     SetKeyDelay(-1)
     SendEvent(text)
 }
 
+; ------------------------------------------------------------------------------
+; BuildRegistries()
+; Purpose:
+;   Construct and return the layout and mode registries.
+; Arguments:
+;   None.
+; Returns:
+;   object - { layouts: Map(), modes: Map() }
+; ------------------------------------------------------------------------------
 BuildRegistries() {
     regs := {}
     regs.layouts := Map()
