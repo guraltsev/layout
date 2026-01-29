@@ -87,6 +87,10 @@ state.Load()
 registries := BuildRegistries()
 layoutMgr := LayoutManager(registries.layouts)
 modeMgr := ModeManager(registries.modes)
+layoutOrder := []
+for name, def in registries.layouts {
+    layoutOrder.Push(name)
+}
 
 ; ------------------------------------------------------------------------------
 ; ApplyState(*)
@@ -102,9 +106,39 @@ ApplyState := (*) => (
     modeMgr.Select(state.mode)
 )
 
+; ------------------------------------------------------------------------------
+; NextLayout()
+; Purpose:
+;   Cycle to the next registered layout (wraps around).
+; Arguments:
+;   None.
+; Returns:
+;   Nothing.
+; ------------------------------------------------------------------------------
+NextLayout() {
+    global state, layoutOrder, tray
+    currentIndex := 0
+    for index, name in layoutOrder {
+        if (name = state.layout) {
+            currentIndex := index
+            break
+        }
+    }
+    nextIndex := currentIndex + 1
+    if (nextIndex > layoutOrder.Length)
+        nextIndex := 1
+
+    state.layout := layoutOrder[nextIndex]
+    ApplyState()
+    state.Save()
+    tray.Render(state)
+}
+
 tray := TrayUI(registries, state, ApplyState)
 tray.Build()
 ApplyState()
 tray.Render(state)
+
+RControl & RShift::NextLayout()
 
 return

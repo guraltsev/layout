@@ -99,17 +99,15 @@ class LayoutManager {
     ; ----------------------------------------------------------------------------
     ; SendRemap(val)
     ; Purpose:
-    ;   Send the remapped output for a layout key.
+    ;   Send the remapped output for a layout key while preserving modifiers.
+    ;   This uses Send with {Blind} so Shift/Ctrl/Alt states are respected when
+    ;   you press a remapped key (e.g., Shift+letter stays uppercase).
     ; Arguments:
-    ;   val (string) - Output value; if formatted like "{Backspace}" it's sent
-    ;                 as a key, otherwise sent as literal text.
+    ;   val (string) - Output value; key names like "{Backspace}" or literal keys.
     ; Returns:
     ;   Nothing.
     ; ----------------------------------------------------------------------------
     SendRemap(val) {
-        if RegExMatch(val, "^\{.+\}$")
-            Send(val)
-        else
-            SendText(val)
+        Send("{Blind}" val)
     }
 }
