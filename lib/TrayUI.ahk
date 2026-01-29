@@ -41,7 +41,7 @@ class TrayUI {
         A_TrayMenu.Delete()
 
         for name, def in this.regs.layouts {
-            this.layoutMenu.Add(def.name, (*) => this.SetLayout(name))
+            this.layoutMenu.Add(def.name, ObjBindMethod(this, "SetLayout", name))
             this.layoutCaptions.Push(def.name)
             if (def.icon != "")
                 this.layoutMenu.SetIcon(def.name, def.icon)
@@ -49,15 +49,15 @@ class TrayUI {
         A_TrayMenu.Add("Layout", this.layoutMenu)
 
         for name, def in this.regs.modes {
-            this.modeMenu.Add(def.name, (*) => this.SetMode(name))
+            this.modeMenu.Add(def.name, ObjBindMethod(this, "SetMode", name))
             this.modeCaptions.Push(def.name)
         }
         A_TrayMenu.Add("Mode", this.modeMenu)
 
         A_TrayMenu.Add()
-        A_TrayMenu.Add("Debug", (*) => this.ToggleDebug())
-        A_TrayMenu.Add("Reload", (*) => Reload())
-        A_TrayMenu.Add("Exit", (*) => ExitApp())
+        A_TrayMenu.Add("Debug", ObjBindMethod(this, "ToggleDebug"))
+        A_TrayMenu.Add("Reload", Reload)
+        A_TrayMenu.Add("Exit", ExitApp)
     }
 
     ; ----------------------------------------------------------------------------

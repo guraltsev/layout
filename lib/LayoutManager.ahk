@@ -84,7 +84,7 @@ class LayoutManager {
         for sc, out in def.remaps {
             hk := sc
             val := out
-            fn := (*) => this.SendRemap(val)
+            fn := ObjBindMethod(this, "SendRemap", val)
             Hotkey(hk, fn, "On")
             this.activeHotkeys.Push(hk)
         }
