@@ -108,7 +108,7 @@ class TrayUI {
     }
 
     ; Set layout and apply
-    SetLayout(name) {
+    SetLayout(name, *) {
         this.state.layout := name
         this.state.Save()
         this.applyFn()
@@ -116,7 +116,7 @@ class TrayUI {
     }
 
     ; Set mode and apply
-    SetMode(name) {
+    SetMode(name, *) {
         this.state.mode := name
         this.state.Save()
         this.applyFn()
