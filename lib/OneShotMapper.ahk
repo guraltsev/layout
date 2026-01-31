@@ -83,12 +83,14 @@ class OneShotMapper {
         }
 
         ; Look up in map and send result
+        ; Use (this.sendFn)(arg) syntax to call as function, not method
+        ; Method syntax this.sendFn(arg) would pass `this` as first parameter
         if this.map.Has(key) {
             out := this.map[key]
-            this.sendFn(out)
+            (this.sendFn)(out)
         } else {
             ; Fallback: send what was typed
-            this.sendFn(key)
+            (this.sendFn)(key)
         }
 
         ; Re-enable the trigger hotkey
