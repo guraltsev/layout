@@ -19,7 +19,7 @@ UnicodeMathMap := Map(
     "L", "Λ",
     "m", "μ",
     "n", "ν",
-    "N", "Ν",
+    "N", "∇",   ; nabla (matches LaTeX \nabla)
     "p", "π",
     "P", "Π",
     "q", "χ",
@@ -39,4 +39,9 @@ UnicodeMathMap := Map(
     "i", "∈",
     "0", "∅",
     "I", "∞",
+    "\", "∖",   ; setminus
+    "+", "∪",   ; cup (union)
+    "-", "∩",   ; cap (intersection)
+    "<", "⟨",   ; left angle bracket
+    ">", "⟩",   ; right angle bracket
 )

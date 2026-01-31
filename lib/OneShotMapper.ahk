@@ -61,9 +61,10 @@ class OneShotMapper {
         }
 
         ; Create InputHook to capture next key(s)
+        ; Use only "L1" option - captures 1 character then automatically ends
+        ; Do NOT use KeyOpt("{All}", "E") - that makes keys end the hook
+        ; without being added to ih.Input (they go to ih.EndKey instead)
         ih := InputHook("L" this.captureLen)
-        ih.VisibleNonText := true
-        ih.KeyOpt("{All}", "E")  ; End on any key
 
         if (this.timeoutMs > 0)
             ih.Timeout := this.timeoutMs / 1000.0
