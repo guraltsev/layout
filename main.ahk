@@ -85,8 +85,8 @@ ApplyState() {
 }
 
 ; Create and build tray UI
-global trayUI := TrayUI(registries, state, ApplyState)
-trayUI.Build()
+global tray := TrayUI(registries, state, ApplyState)
+tray.Build()
 
 ; Apply state at startup
 ApplyState()
@@ -97,7 +97,7 @@ ApplyState()
 
 ; Cycle to next layout with RControl + RShift
 RControl & RShift:: {
-    global state, registries, trayUI
+    global state, registries, tray
 
     ; Get layout names as array
     layoutNames := []
@@ -121,7 +121,7 @@ RControl & RShift:: {
     }
 
     ; Update state via tray UI (handles save + apply + render)
-    trayUI.SetLayout(layoutNames[nextIdx])
+    tray.SetLayout(layoutNames[nextIdx])
 }
 
 ; ============================================================================
