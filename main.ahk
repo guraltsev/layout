@@ -13,6 +13,24 @@
 ;   - Accent character composition
 ;   - Persistent settings via INI file
 ;   - Data-driven, extensible architecture
+;   - Runtime configuration via INI files (no recompile needed)
+;
+; Configuration:
+;   Layouts and character maps can be customized via INI files in the
+;   config/ directory. The script loads config at startup:
+;
+;   config/
+;     layouts/           ; Layout definitions (scancode -> character)
+;       Colemak.ini
+;       QWERTY.ini
+;     maps/              ; Character maps for compose/math modes
+;       acute.ini        ; Acute accent composition
+;       grave.ini        ; Grave accent composition
+;       diaeresis.ini    ; Diaeresis (umlaut) composition
+;       latex.ini        ; LaTeX math symbol input
+;       unicode.ini      ; Unicode math symbol input
+;
+;   If config files don't exist, hardcoded defaults are used.
 ;
 ; Hotkeys:
 ;   - RControl + RShift: Cycle to next layout
@@ -31,6 +49,7 @@ SendMode("Input")  ; Optimizes for faster and more reliable input
 #Include lib\ModeManager.ahk
 #Include lib\LayoutManager.ahk
 #Include lib\TrayUI.ahk
+#Include lib\ConfigLoader.ahk
 
 ; --- Map includes (character mappings) ---
 #Include maps\CharacterMaps.ahk
@@ -51,15 +70,19 @@ SendMode("Input")  ; Optimizes for faster and more reliable input
 global state := AppState(A_ScriptDir "\config.ini")
 state.Load()
 
-; Build registries for layouts and modes
-global registries := BuildRegistries()
+; Create config loader for runtime configuration
+; Layouts and maps are loaded from config/ directory if present
+global configLoader := ConfigLoader(A_ScriptDir "\config")
+
+; Build registries for layouts and modes (loads from config if available)
+global registries := BuildRegistries(configLoader)
 
 ; Create managers
 global layoutMgr := LayoutManager(registries.layouts)
 global modeMgr := ModeManager(registries.modes)
 
-; Create accent mappers (active when Colemak is selected)
-global accentMappers := BuildAccentMappers()
+; Create accent mappers (loads from config if available)
+global accentMappers := BuildAccentMappers(configLoader)
 
 ; Apply state function - called when state changes
 ApplyState(*) {
