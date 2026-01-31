@@ -83,10 +83,11 @@ class TrayUI {
         }
 
         ; Debug check
-        if this.state.debug
+        if this.state.debug {
             try A_TrayMenu.Check("Debug")
-        else
+        } else {
             try A_TrayMenu.Uncheck("Debug")
+        }
 
         ; Update tooltip
         A_IconTip := "Layout: " this.state.layout "`nMode: " this.state.mode
