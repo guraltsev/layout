@@ -73,12 +73,12 @@ class LayoutManager {
     EnableLayout(def) {
         ; Register key remaps
         for sc, out in def.remaps {
-            hk := sc
-            val := out
-            fn := (*) => this.SendRemap(val)
+            ; Use ObjBindMethod to capture 'out' value at creation time
+            ; (closures in AHKv2 capture by reference, causing all to use last value)
+            fn := ObjBindMethod(this, "SendRemap", out)
             try {
-                Hotkey(hk, fn, "On")
-                this.activeHotkeys.Push(hk)
+                Hotkey(sc, fn, "On")
+                this.activeHotkeys.Push(sc)
             } catch {
             }
         }
