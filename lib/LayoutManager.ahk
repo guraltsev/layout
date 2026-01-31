@@ -53,12 +53,16 @@ class LayoutManager {
         ; Disable all registered hotkeys
         for hk in this.activeHotkeys {
             try Hotkey(hk, "Off")
+            catch {
+            }
         }
         this.activeHotkeys := []
 
         ; Disable all accent mappers
         for mapper in this.activeMappers {
             try mapper.Disable()
+            catch {
+            }
         }
         this.activeMappers := []
 
@@ -75,6 +79,7 @@ class LayoutManager {
             try {
                 Hotkey(hk, fn, "On")
                 this.activeHotkeys.Push(hk)
+            } catch {
             }
         }
 
@@ -84,6 +89,7 @@ class LayoutManager {
                 try {
                     mapper.Enable()
                     this.activeMappers.Push(mapper)
+                } catch {
                 }
             }
         }

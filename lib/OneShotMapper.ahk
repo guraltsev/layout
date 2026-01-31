@@ -47,6 +47,8 @@ class OneShotMapper {
         if !this.enabled
             return
         try Hotkey(this.trigger, "Off")
+        catch {
+        }
         this.enabled := false
     }
 
@@ -55,6 +57,8 @@ class OneShotMapper {
         ; Disable the trigger temporarily to prevent recursion
         hk := A_ThisHotkey
         try Hotkey(hk, "Off")
+        catch {
+        }
 
         ; Create InputHook to capture next key(s)
         ih := InputHook("L" this.captureLen)
@@ -72,6 +76,8 @@ class OneShotMapper {
         ; If nothing captured (e.g., timeout), re-enable and return
         if (key = "") {
             try Hotkey(hk, "On")
+            catch {
+            }
             return
         }
 
@@ -86,5 +92,7 @@ class OneShotMapper {
 
         ; Re-enable the trigger hotkey
         try Hotkey(hk, "On")
+        catch {
+        }
     }
 }

@@ -35,6 +35,8 @@ class AppState {
             this.layout := IniRead(this.configPath, "State", "Layout", this.layout)
             this.mode := IniRead(this.configPath, "State", "Mode", this.mode)
             this.debug := IniRead(this.configPath, "State", "Debug", this.debug ? 1 : 0) = 1
+        } catch {
+            ; Silently ignore errors - keep defaults
         }
     }
 
@@ -44,6 +46,8 @@ class AppState {
             IniWrite(this.layout, this.configPath, "State", "Layout")
             IniWrite(this.mode, this.configPath, "State", "Mode")
             IniWrite(this.debug ? 1 : 0, this.configPath, "State", "Debug")
+        } catch {
+            ; Silently ignore write errors
         }
     }
 }

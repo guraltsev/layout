@@ -34,11 +34,15 @@ class ModeManager {
         try {
             if this.registry.Has(this.active)
                 this.registry[this.active].Disable()
+        } catch {
+            ; Ignore disable errors
         }
 
         ; Enable the new mode
         try {
             this.registry[name].Enable()
+        } catch {
+            ; Ignore enable errors
         }
 
         this.active := name
