@@ -69,13 +69,13 @@ BuildAccentMappers() {
     mappers := []
 
     ; RAlt + ' (quote key) -> Acute accents
-    mappers.Push(OneShotMapper(">!SC028", AcuteAccentMap, Send))
+    mappers.Push(OneShotMapper(">!SC028", AcuteAccentMap, SendText))
 
     ; RAlt + ` (backtick) -> Grave accents
-    mappers.Push(OneShotMapper(">!SC029", GraveAccentMap, Send))
+    mappers.Push(OneShotMapper(">!SC029", GraveAccentMap, SendText))
 
     ; RAlt + ; (semicolon, which is p in Colemak) -> Diaeresis
-    mappers.Push(OneShotMapper(">!SC019", DiaeresisMap, Send))
+    mappers.Push(OneShotMapper(">!SC019", DiaeresisMap, SendText))
 
     return mappers
 }
