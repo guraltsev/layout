@@ -103,7 +103,11 @@ class LayoutManager {
         ; Use {Blind} to preserve modifier states (Shift, Ctrl, Alt, Win)
         ; This ensures Shift+key sends the shifted character (e.g., Shift+a -> A)
         ; Works for both literal characters and special keys like {Backspace}
-        Send("{Blind}" . val)
+        ;
+        ; IMPORTANT: Must use SendEvent, not Send (which defaults to SendInput).
+        ; SendInput cannot interact with InputHook in the same script, which
+        ; breaks accent composition keys that use InputHook to capture the next key.
+        SendEvent("{Blind}" . val)
     }
 
     ; Get the currently active layout name
