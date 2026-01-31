@@ -62,7 +62,7 @@ global modeMgr := ModeManager(registries.modes)
 global accentMappers := BuildAccentMappers()
 
 ; Apply state function - called when state changes
-ApplyState() {
+ApplyState(*) {
     global layoutMgr, modeMgr, state, accentMappers
 
     ; Select layout
