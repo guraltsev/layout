@@ -76,9 +76,12 @@ class LayoutManager {
             ; Use ObjBindMethod to capture 'out' value at creation time
             ; (closures in AHKv2 capture by reference, causing all to use last value)
             fn := ObjBindMethod(this, "SendRemap", out)
+            ; Use * wildcard prefix to fire hotkey even with modifiers held
+            ; This is essential for Shift+key to work correctly with {Blind}
+            hk := "*" . sc
             try {
-                Hotkey(sc, fn, "On")
-                this.activeHotkeys.Push(sc)
+                Hotkey(hk, fn, "On")
+                this.activeHotkeys.Push(hk)
             } catch {
             }
         }
