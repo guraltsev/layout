@@ -97,11 +97,10 @@ class LayoutManager {
 
     ; Send remapped character
     SendRemap(val, *) {
-        ; Use Send for special keys (starting with {), SendText for literals
-        if (SubStr(val, 1, 1) = "{")
-            Send(val)
-        else
-            SendText(val)
+        ; Use {Blind} to preserve modifier states (Shift, Ctrl, Alt, Win)
+        ; This ensures Shift+key sends the shifted character (e.g., Shift+a -> A)
+        ; Works for both literal characters and special keys like {Backspace}
+        Send("{Blind}" . val)
     }
 
     ; Get the currently active layout name
