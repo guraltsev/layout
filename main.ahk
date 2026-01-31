@@ -72,17 +72,17 @@ state.Load()
 
 ; Create config loader for runtime configuration
 ; Layouts and maps are loaded from config/ directory if present
-global configLoader := ConfigLoader(A_ScriptDir "\config")
+global cfgLoader := ConfigLoader(A_ScriptDir "\config")
 
 ; Build registries for layouts and modes (loads from config if available)
-global registries := BuildRegistries(configLoader)
+global registries := BuildRegistries(cfgLoader)
 
 ; Create managers
 global layoutMgr := LayoutManager(registries.layouts)
 global modeMgr := ModeManager(registries.modes)
 
 ; Create accent mappers (loads from config if available)
-global accentMappers := BuildAccentMappers(configLoader)
+global accentMappers := BuildAccentMappers(cfgLoader)
 
 ; Apply state function - called when state changes
 ApplyState(*) {
