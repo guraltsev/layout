@@ -34,9 +34,9 @@ class TrayUI {
 
         ; Layout submenu (radio buttons)
         for name, def in this.regs.layouts {
-            ; Capture name in closure
-            layoutName := name
-            callback := (*) => this.SetLayout(layoutName)
+            ; Use ObjBindMethod to capture 'name' value at creation time
+            ; (closures in AHKv2 capture by reference, causing all to use last value)
+            callback := ObjBindMethod(this, "SetLayout", name)
             this.layoutMenu.Add(def.name, callback, "Radio")
             if (def.icon != "") {
                 try this.layoutMenu.SetIcon(def.name, def.icon)
@@ -48,8 +48,8 @@ class TrayUI {
 
         ; Mode submenu (radio buttons)
         for name, def in this.regs.modes {
-            modeName := name
-            callback := (*) => this.SetMode(modeName)
+            ; Use ObjBindMethod to capture 'name' value at creation time
+            callback := ObjBindMethod(this, "SetMode", name)
             this.modeMenu.Add(def.name, callback, "Radio")
         }
         A_TrayMenu.Add("Mode", this.modeMenu)
