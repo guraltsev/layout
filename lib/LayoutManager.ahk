@@ -96,7 +96,7 @@ class LayoutManager {
     }
 
     ; Send remapped character
-    SendRemap(val) {
+    SendRemap(val, *) {
         ; Use Send for special keys (starting with {), SendText for literals
         if (SubStr(val, 1, 1) = "{")
             Send(val)
