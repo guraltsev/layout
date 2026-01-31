@@ -47,6 +47,8 @@ class OneShotMapper {
         if !this.enabled
             return
         try Hotkey(this.trigger, "Off")
+        catch {
+        }
         this.enabled := false
     }
 
@@ -55,11 +57,14 @@ class OneShotMapper {
         ; Disable the trigger temporarily to prevent recursion
         hk := A_ThisHotkey
         try Hotkey(hk, "Off")
+        catch {
+        }
 
         ; Create InputHook to capture next key(s)
+        ; Use only "L1" option - captures 1 character then automatically ends
+        ; Do NOT use KeyOpt("{All}", "E") - that makes keys end the hook
+        ; without being added to ih.Input (they go to ih.EndKey instead)
         ih := InputHook("L" this.captureLen)
-        ih.VisibleNonText := true
-        ih.KeyOpt("{All}", "E")  ; End on any key
 
         if (this.timeoutMs > 0)
             ih.Timeout := this.timeoutMs / 1000.0
@@ -72,19 +77,25 @@ class OneShotMapper {
         ; If nothing captured (e.g., timeout), re-enable and return
         if (key = "") {
             try Hotkey(hk, "On")
+            catch {
+            }
             return
         }
 
         ; Look up in map and send result
+        ; Use (this.sendFn)(arg) syntax to call as function, not method
+        ; Method syntax this.sendFn(arg) would pass `this` as first parameter
         if this.map.Has(key) {
             out := this.map[key]
-            this.sendFn(out)
+            (this.sendFn)(out)
         } else {
             ; Fallback: send what was typed
-            this.sendFn(key)
+            (this.sendFn)(key)
         }
 
         ; Re-enable the trigger hotkey
         try Hotkey(hk, "On")
+        catch {
+        }
     }
 }

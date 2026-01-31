@@ -34,19 +34,22 @@ class TrayUI {
 
         ; Layout submenu (radio buttons)
         for name, def in this.regs.layouts {
-            ; Capture name in closure
-            layoutName := name
-            callback := (*) => this.SetLayout(layoutName)
+            ; Use ObjBindMethod to capture 'name' value at creation time
+            ; (closures in AHKv2 capture by reference, causing all to use last value)
+            callback := ObjBindMethod(this, "SetLayout", name)
             this.layoutMenu.Add(def.name, callback, "Radio")
-            if (def.icon != "")
+            if (def.icon != "") {
                 try this.layoutMenu.SetIcon(def.name, def.icon)
+                catch {
+                }
+            }
         }
         A_TrayMenu.Add("Layout", this.layoutMenu)
 
         ; Mode submenu (radio buttons)
         for name, def in this.regs.modes {
-            modeName := name
-            callback := (*) => this.SetMode(modeName)
+            ; Use ObjBindMethod to capture 'name' value at creation time
+            callback := ObjBindMethod(this, "SetMode", name)
             this.modeMenu.Add(def.name, callback, "Radio")
         }
         A_TrayMenu.Add("Mode", this.modeMenu)
@@ -70,30 +73,42 @@ class TrayUI {
         if this.regs.layouts.Has(this.state.layout) {
             cap := this.regs.layouts[this.state.layout].name
             try this.layoutMenu.Check(cap)
+            catch {
+            }
 
             ; Update tray icon to match layout
-            if (this.regs.layouts[this.state.layout].icon != "")
+            if (this.regs.layouts[this.state.layout].icon != "") {
                 try TraySetIcon(this.regs.layouts[this.state.layout].icon)
+                catch {
+                }
+            }
         }
 
         ; Check the selected mode
         if this.regs.modes.Has(this.state.mode) {
             cap := this.regs.modes[this.state.mode].name
             try this.modeMenu.Check(cap)
+            catch {
+            }
         }
 
         ; Debug check
-        if this.state.debug
+        if this.state.debug {
             try A_TrayMenu.Check("Debug")
-        else
+            catch {
+            }
+        } else {
             try A_TrayMenu.Uncheck("Debug")
+            catch {
+            }
+        }
 
         ; Update tooltip
         A_IconTip := "Layout: " this.state.layout "`nMode: " this.state.mode
     }
 
     ; Set layout and apply
-    SetLayout(name) {
+    SetLayout(name, *) {
         this.state.layout := name
         this.state.Save()
         this.applyFn()
@@ -101,7 +116,7 @@ class TrayUI {
     }
 
     ; Set mode and apply
-    SetMode(name) {
+    SetMode(name, *) {
         this.state.mode := name
         this.state.Save()
         this.applyFn()
@@ -122,9 +137,13 @@ class TrayUI {
         ; and uncheck each known item
         for name, def in this.regs.layouts {
             try menu.Uncheck(def.name)
+            catch {
+            }
         }
         for name, def in this.regs.modes {
             try menu.Uncheck(def.name)
+            catch {
+            }
         }
     }
 }

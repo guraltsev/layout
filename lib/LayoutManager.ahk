@@ -53,12 +53,16 @@ class LayoutManager {
         ; Disable all registered hotkeys
         for hk in this.activeHotkeys {
             try Hotkey(hk, "Off")
+            catch {
+            }
         }
         this.activeHotkeys := []
 
         ; Disable all accent mappers
         for mapper in this.activeMappers {
             try mapper.Disable()
+            catch {
+            }
         }
         this.activeMappers := []
 
@@ -69,12 +73,16 @@ class LayoutManager {
     EnableLayout(def) {
         ; Register key remaps
         for sc, out in def.remaps {
-            hk := sc
-            val := out
-            fn := (*) => this.SendRemap(val)
+            ; Use ObjBindMethod to capture 'out' value at creation time
+            ; (closures in AHKv2 capture by reference, causing all to use last value)
+            fn := ObjBindMethod(this, "SendRemap", out)
+            ; Use * wildcard prefix to fire hotkey even with modifiers held
+            ; This is essential for Shift+key to work correctly with {Blind}
+            hk := "*" . sc
             try {
                 Hotkey(hk, fn, "On")
                 this.activeHotkeys.Push(hk)
+            } catch {
             }
         }
 
@@ -84,18 +92,22 @@ class LayoutManager {
                 try {
                     mapper.Enable()
                     this.activeMappers.Push(mapper)
+                } catch {
                 }
             }
         }
     }
 
     ; Send remapped character
-    SendRemap(val) {
-        ; Use Send for special keys (starting with {), SendText for literals
-        if (SubStr(val, 1, 1) = "{")
-            Send(val)
-        else
-            SendText(val)
+    SendRemap(val, *) {
+        ; Use {Blind} to preserve modifier states (Shift, Ctrl, Alt, Win)
+        ; This ensures Shift+key sends the shifted character (e.g., Shift+a -> A)
+        ; Works for both literal characters and special keys like {Backspace}
+        ;
+        ; IMPORTANT: Must use SendEvent, not Send (which defaults to SendInput).
+        ; SendInput cannot interact with InputHook in the same script, which
+        ; breaks accent composition keys that use InputHook to capture the next key.
+        SendEvent("{Blind}" . val)
     }
 
     ; Get the currently active layout name
