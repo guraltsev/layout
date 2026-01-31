@@ -154,7 +154,7 @@ _Menu_LaTeXMathInput(ItemName, ItemPos, Menu) {
 }
 
 A_TrayMenu.Add("UnicodeInput", _Menu_UnicodeMathInput)
-if (LaTeXMathInput) {
+if (UnicodeMathInput) {
     A_TrayMenu.Check("UnicodeInput")
 } else {
     A_TrayMenu.Uncheck("UnicodeInput")
@@ -329,7 +329,7 @@ UnicodeMath_HKF() {
 }
 
 #HotIf LaTeXMathInput == True
-SC029:: UnicodeMath_HKF ;; TODO make the function LaTeXMath_HKF know what is its hotkey
+SC029:: LaTeXMath_HKF ;; Backtick triggers LaTeX math input
 
 #HotIf UnicodeMathInput == True
 SC029:: UnicodeMath_HKF ;; TODO make the function UnicodeMath_HKF know what is its hotkey
