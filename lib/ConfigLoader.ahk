@@ -130,23 +130,28 @@ class ConfigLoader {
             return mapping
 
         try {
-            ; Read entire Map section
-            mapSection := IniRead(filePath, "Map")
-            if (mapSection != "") {
-                ; Parse key=value pairs
-                Loop Parse, mapSection, "`n", "`r" {
-                    if (A_LoopField = "")
-                        continue
+            fileText := FileRead(filePath, "UTF-8")
+            inMapSection := false
+            Loop Parse, fileText, "`n", "`r" {
+                line := Trim(A_LoopField)
+                if (line = "" || SubStr(line, 1, 1) = ";")
+                    continue
 
-                    ; Split on first =
-                    eqPos := InStr(A_LoopField, "=")
-                    if (eqPos > 0) {
-                        key := SubStr(A_LoopField, 1, eqPos - 1)
-                        value := SubStr(A_LoopField, eqPos + 1)
-                        ; Don't trim - preserve exact keys (spaces, special chars)
-                        if (key != "") {
-                            mapping[key] := value
-                        }
+                if (RegExMatch(line, "i)^\[(.+)\]$", &sectionMatch)) {
+                    inMapSection := (StrLower(sectionMatch[1]) = "map")
+                    continue
+                }
+
+                if (!inMapSection)
+                    continue
+
+                eqPos := InStr(line, "=")
+                if (eqPos > 0) {
+                    key := SubStr(line, 1, eqPos - 1)
+                    value := SubStr(line, eqPos + 1)
+                    ; Don't trim - preserve exact keys (spaces, special chars)
+                    if (key != "") {
+                        mapping[key] := value
                     }
                 }
             }
