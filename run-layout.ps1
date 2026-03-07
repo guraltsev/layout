@@ -24,15 +24,15 @@
   - The task uses LogonType "Interactive", meaning it runs in the current user session.
     If you need it to run while logged off, change LogonType and provide credentials accordingly.
 #>
-
-Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Stop'
-
 param(
     [string]$TaskName = 'Layout',
     [string]$ExePath  = (Join-Path -Path $PSScriptRoot -ChildPath 'layout.exe'),
     [switch]$Force
 )
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
 
 function Test-IsAdmin {
     $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
