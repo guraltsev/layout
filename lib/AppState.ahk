@@ -3,7 +3,7 @@
 ; AppState - Centralized state management with persistence
 ;
 ; This class owns all application state and provides:
-;   - Single source of truth for layout, mode, debug settings
+;   - Single source of truth for layout and mode settings
 ;   - INI-based persistence (load on startup, save on change)
 ;   - Clean API for state access and modification
 ;
@@ -22,7 +22,6 @@ class AppState {
         ; Default values
         this.layout := "QWERTY"      ; Current layout name
         this.mode := "off"           ; "off" | "latex" | "unicode"
-        this.debug := false          ; Debug mode toggle
     }
 
     ; Load state from INI file
@@ -34,7 +33,6 @@ class AppState {
         try {
             this.layout := IniRead(this.configPath, "State", "Layout", this.layout)
             this.mode := IniRead(this.configPath, "State", "Mode", this.mode)
-            this.debug := IniRead(this.configPath, "State", "Debug", this.debug ? 1 : 0) = 1
         } catch {
             ; Silently ignore errors - keep defaults
         }
@@ -45,7 +43,6 @@ class AppState {
         try {
             IniWrite(this.layout, this.configPath, "State", "Layout")
             IniWrite(this.mode, this.configPath, "State", "Mode")
-            IniWrite(this.debug ? 1 : 0, this.configPath, "State", "Debug")
         } catch {
             ; Silently ignore write errors
         }

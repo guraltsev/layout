@@ -30,7 +30,7 @@
 ;       latex.ini        ; LaTeX math symbol input
 ;       unicode.ini      ; Unicode math symbol input
 ;
-;   If config files don't exist, hardcoded defaults are used.
+;   NOTE: This script requires the config/ directory to exist.
 ;
 ; Hotkeys:
 ;   - RControl + RShift: Cycle to next layout
@@ -51,15 +51,7 @@ SendMode("Input")  ; Optimizes for faster and more reliable input
 #Include lib\TrayUI.ahk
 #Include lib\ConfigLoader.ahk
 
-; --- Map includes (character mappings) ---
-#Include maps\CharacterMaps.ahk
-#Include maps\LaTeXMathInputMaps.ahk
-#Include maps\UnicodeMathInputMaps.ahk
-
-; --- Layout definitions ---
-#Include layouts\Colemak.ahk
-
-; --- Registry (must come after maps and layouts) ---
+; --- Registry ---
 #Include lib\Registries.ahk
 
 ; ============================================================================
@@ -70,19 +62,32 @@ SendMode("Input")  ; Optimizes for faster and more reliable input
 global state := AppState(A_ScriptDir "\config.ini")
 state.Load()
 
-; Create config loader for runtime configuration
-; Layouts and maps are loaded from config/ directory if present
-global cfgLoader := ConfigLoader(A_ScriptDir "\config")
+; Create config loader for runtime configuration.
+; This script requires config/ (and its subfolders) to exist.
+try {
+    global cfgLoader := ConfigLoader(A_ScriptDir "\config")
 
-; Build registries for layouts and modes (loads from config if available)
-global registries := BuildRegistries(cfgLoader)
+    ; Build registries for layouts and modes
+    global registries := BuildRegistries(cfgLoader)
 
-; Create managers
-global layoutMgr := LayoutManager(registries.layouts)
-global modeMgr := ModeManager(registries.modes)
+    ; Create managers
+    global layoutMgr := LayoutManager(registries.layouts)
+    global modeMgr := ModeManager(registries.modes)
 
-; Create accent mappers (loads from config if available)
-global accentMappers := BuildAccentMappers(cfgLoader)
+    ; Create accent mappers
+    global accentMappers := BuildAccentMappers(cfgLoader)
+} catch as err {
+    MsgBox(
+        "Configuration error:`n" err.Message "`n`n" .
+        "Expected structure:`n" .
+        "  config/`n" .
+        "    layouts/*.ini`n" .
+        "    maps/*.ini",
+        "Layout",
+        "Iconx"
+    )
+    ExitApp(1)
+}
 
 ; Apply state function - called when state changes
 ApplyState(*) {

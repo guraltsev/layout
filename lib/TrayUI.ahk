@@ -55,8 +55,6 @@ class TrayUI {
         A_TrayMenu.Add("Mode", this.modeMenu)
 
         A_TrayMenu.Add()  ; Separator
-        A_TrayMenu.Add("Debug", (*) => this.ToggleDebug())
-        A_TrayMenu.Add()  ; Separator
         A_TrayMenu.Add("Reload", (*) => Reload())
         A_TrayMenu.Add("Exit", (*) => ExitApp())
 
@@ -92,17 +90,6 @@ class TrayUI {
             }
         }
 
-        ; Debug check
-        if this.state.debug {
-            try A_TrayMenu.Check("Debug")
-            catch {
-            }
-        } else {
-            try A_TrayMenu.Uncheck("Debug")
-            catch {
-            }
-        }
-
         ; Update tooltip
         A_IconTip := "Layout: " this.state.layout "`nMode: " this.state.mode
     }
@@ -118,14 +105,6 @@ class TrayUI {
     ; Set mode and apply
     SetMode(name, *) {
         this.state.mode := name
-        this.state.Save()
-        this.applyFn()
-        this.Render()
-    }
-
-    ; Toggle debug mode
-    ToggleDebug() {
-        this.state.debug := !this.state.debug
         this.state.Save()
         this.applyFn()
         this.Render()

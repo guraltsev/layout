@@ -22,12 +22,10 @@ class LayoutManager {
     ;     - abbr: Abbreviation
     ;     - icon: Icon path (can be empty)
     ;     - remaps: Map of scancode -> output character
-    ;     - accentMappers: Array of OneShotMapper instances for accent composition
     __New(layoutRegistry) {
         this.registry := layoutRegistry
         this.activeName := ""
         this.activeHotkeys := []  ; Store hotkey strings to disable later
-        this.activeMappers := []  ; Store OneShotMapper instances
     }
 
     ; Select and activate a layout
@@ -58,14 +56,6 @@ class LayoutManager {
         }
         this.activeHotkeys := []
 
-        ; Disable all accent mappers
-        for mapper in this.activeMappers {
-            try mapper.Disable()
-            catch {
-            }
-        }
-        this.activeMappers := []
-
         this.activeName := ""
     }
 
@@ -86,16 +76,6 @@ class LayoutManager {
             }
         }
 
-        ; Enable accent mappers if defined
-        if def.HasOwnProp("accentMappers") {
-            for mapper in def.accentMappers {
-                try {
-                    mapper.Enable()
-                    this.activeMappers.Push(mapper)
-                } catch {
-                }
-            }
-        }
     }
 
     ; Send remapped character
@@ -110,8 +90,4 @@ class LayoutManager {
         SendEvent("{Blind}" . val)
     }
 
-    ; Get the currently active layout name
-    GetActive() {
-        return this.activeName
-    }
 }

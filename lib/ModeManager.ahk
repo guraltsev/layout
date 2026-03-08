@@ -48,8 +48,4 @@ class ModeManager {
         this.active := name
     }
 
-    ; Get the currently active mode name
-    GetActive() {
-        return this.active
-    }
 }

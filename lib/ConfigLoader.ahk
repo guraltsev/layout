@@ -37,7 +37,7 @@
 ; Usage:
 ;   loader := ConfigLoader(A_ScriptDir "\config")
 ;   layouts := loader.LoadLayouts()
-;   maps := loader.LoadMaps()
+;   latexMap := loader.LoadMap("latex")
 
 class ConfigLoader {
     ; Constructor
@@ -46,6 +46,14 @@ class ConfigLoader {
         this.configDir := configDir
         this.layoutsDir := configDir "\layouts"
         this.mapsDir := configDir "\maps"
+
+        ; The application is config-driven: require the directories to exist.
+        if !DirExist(this.configDir)
+            throw Error("Config directory not found: " this.configDir)
+        if !DirExist(this.layoutsDir)
+            throw Error("Layouts directory not found: " this.layoutsDir)
+        if !DirExist(this.mapsDir)
+            throw Error("Maps directory not found: " this.mapsDir)
     }
 
     ; Load all layouts from config/layouts/*.ini
@@ -53,10 +61,8 @@ class ConfigLoader {
     LoadLayouts() {
         layouts := Map()
 
-        ; Check if layouts directory exists
-        if !DirExist(this.layoutsDir) {
-            return layouts
-        }
+        if !DirExist(this.layoutsDir)
+            throw Error("Layouts directory not found: " this.layoutsDir)
 
         ; Find all INI files in layouts directory
         Loop Files, this.layoutsDir "\*.ini" {
@@ -168,43 +174,4 @@ class ConfigLoader {
         return this.LoadMapFile(this.mapsDir "\" mapName ".ini")
     }
 
-    ; Load all maps from config/maps/*.ini
-    ; Returns a Map of map name -> character map
-    LoadAllMaps() {
-        maps := Map()
-
-        if !DirExist(this.mapsDir) {
-            return maps
-        }
-
-        Loop Files, this.mapsDir "\*.ini" {
-            try {
-                ; Get map name from filename (without extension)
-                SplitPath(A_LoopFileFullPath, , , , &nameNoExt)
-                mapData := this.LoadMapFile(A_LoopFileFullPath)
-                if (mapData.Count > 0) {
-                    maps[nameNoExt] := mapData
-                }
-            } catch {
-                ; Skip invalid files
-            }
-        }
-
-        return maps
-    }
-
-    ; Check if config directory exists and has content
-    HasConfig() {
-        return DirExist(this.configDir)
-    }
-
-    ; Create default config directory structure
-    CreateDefaultStructure() {
-        if !DirExist(this.configDir)
-            DirCreate(this.configDir)
-        if !DirExist(this.layoutsDir)
-            DirCreate(this.layoutsDir)
-        if !DirExist(this.mapsDir)
-            DirCreate(this.mapsDir)
-    }
 }

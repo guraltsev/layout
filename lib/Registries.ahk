@@ -3,77 +3,56 @@
 ; Registries - Centralized registration for layouts and modes
 ;
 ; This file provides a single place to register all layouts and input modes.
-; Layouts and maps are loaded from INI config files at runtime, with fallback
-; to hardcoded defaults if config files don't exist.
+; Layouts and maps are loaded from INI config files at runtime.
 ;
 ; Usage:
 ;   loader := ConfigLoader(A_ScriptDir "\config")
 ;   registries := BuildRegistries(loader)
 ;   ; registries.layouts -> Map of layout name -> definition
-;   ; registries.modes -> Map of mode name -> definition
+;   ; registries.modes   -> Map of mode name -> definition
 ;
-; Config file structure:
+; Expected config structure:
 ;   config/
 ;     layouts/
-;       QWERTY.ini
-;       Colemak.ini
+;       *.ini
 ;     maps/
+;       latex.ini
+;       unicode.ini
 ;       acute.ini
 ;       grave.ini
 ;       diaeresis.ini
-;       latex.ini
-;       unicode.ini
 
-BuildRegistries(loader := "") {
+BuildRegistries(loader) {
+    if (loader = "")
+        throw Error("ConfigLoader instance is required.")
+
     regs := {}
     regs.layouts := Map()
     regs.modes := Map()
 
     ; ========================================
-    ; LAYOUTS - Load from config or use defaults
+    ; LAYOUTS
     ; ========================================
 
-    layoutsLoaded := false
-    if (loader != "" && loader.HasConfig()) {
-        configLayouts := loader.LoadLayouts()
-        if (configLayouts.Count > 0) {
-            regs.layouts := configLayouts
-            layoutsLoaded := true
-        }
-    }
-
-    ; Fallback to hardcoded layouts if no config
-    if (!layoutsLoaded) {
-        ; QWERTY layout (no remaps - default keyboard)
-        regs.layouts["QWERTY"] := {
-            name: "QWERTY",
-            abbr: "QW",
-            icon: "icons/default.ico",
-            remaps: Map()
-        }
-
-        ; Colemak layout (from layouts/Colemak.ahk)
-        regs.layouts["Colemak"] := ColemakLayoutDef()
+    regs.layouts := loader.LoadLayouts()
+    if (regs.layouts.Count = 0) {
+        throw Error(
+            "No layouts loaded from: " loader.layoutsDir
+            . "`nAdd at least one .ini file under config/layouts/ with a [Layout] section."
+        )
     }
 
     ; ========================================
-    ; MAPS - Load from config or use defaults
+    ; MAPS (Math input)
     ; ========================================
 
-    ; Try to load maps from config
-    latexMap := ""
-    unicodeMap := ""
+    latexMap := loader.LoadMap("latex")
+    if (latexMap.Count = 0)
+        throw Error("Required map missing or empty: " loader.mapsDir "\latex.ini")
 
-    if (loader != "" && loader.HasConfig()) {
-        latexMap := loader.LoadMap("latex")
-        unicodeMap := loader.LoadMap("unicode")
-    }
-
-    ; Fallback to hardcoded maps if empty
-    if (latexMap = "" || latexMap.Count = 0)
-        latexMap := LaTeXMathMap
-    if (unicodeMap = "" || unicodeMap.Count = 0)
-        unicodeMap := UnicodeMathMap
+    unicodeMap := loader.LoadMap("unicode")
+    if (unicodeMap.Count = 0)
+        throw Error("Required map missing or empty: " loader.mapsDir "\unicode.ini")
 
     ; ========================================
     ; MODES (Input modes)
@@ -108,30 +87,25 @@ BuildRegistries(loader := "") {
     return regs
 }
 
-; Build accent compose mappers for a layout
-; loader - Optional ConfigLoader instance for loading maps from config
-; Returns an array of OneShotMapper instances
-BuildAccentMappers(loader := "") {
+; Build accent compose mappers.
+; Returns an array of OneShotMapper instances.
+BuildAccentMappers(loader) {
+    if (loader = "")
+        throw Error("ConfigLoader instance is required.")
+
     mappers := []
 
-    ; Try to load maps from config
-    acuteMap := ""
-    graveMap := ""
-    diaeresisMap := ""
+    acuteMap := loader.LoadMap("acute")
+    if (acuteMap.Count = 0)
+        throw Error("Required map missing or empty: " loader.mapsDir "\acute.ini")
 
-    if (loader != "" && loader.HasConfig()) {
-        acuteMap := loader.LoadMap("acute")
-        graveMap := loader.LoadMap("grave")
-        diaeresisMap := loader.LoadMap("diaeresis")
-    }
+    graveMap := loader.LoadMap("grave")
+    if (graveMap.Count = 0)
+        throw Error("Required map missing or empty: " loader.mapsDir "\grave.ini")
 
-    ; Fallback to hardcoded maps if empty
-    if (acuteMap = "" || acuteMap.Count = 0)
-        acuteMap := AcuteAccentMap
-    if (graveMap = "" || graveMap.Count = 0)
-        graveMap := GraveAccentMap
-    if (diaeresisMap = "" || diaeresisMap.Count = 0)
-        diaeresisMap := DiaeresisMap
+    diaeresisMap := loader.LoadMap("diaeresis")
+    if (diaeresisMap.Count = 0)
+        throw Error("Required map missing or empty: " loader.mapsDir "\diaeresis.ini")
 
     ; RAlt + ' (quote key) -> Acute accents
     mappers.Push(OneShotMapper(">!SC028", acuteMap, SendText))
