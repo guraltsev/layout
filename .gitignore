@@ -24,3 +24,6 @@ temp/
 # Ignore any other generated files
 dist/
 build/
+digest.txt
+.build/
+.build.tmp/
